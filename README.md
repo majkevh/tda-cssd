@@ -52,7 +52,7 @@ All BERT and XLM-R  pre-trained models can be downloaded from [Hugging Face webs
 To generate the embeddings for a specific model, use the following command from the root of the repository:
 
 ```bash
-python3 src/embs/generate_embeddings.py --model <model_name> --language <language> --corpus <corpus_tag>
+python3 src/embs/generate_embeddings.py --model <MODEL_NAME> --language <LANGUAGE> --corpus <CORPUS>
 ```
 For example, to generate embeddings using the BERT model for the English corpus *ccoha1*, you can run:
 
@@ -65,7 +65,7 @@ This command uses the default parameters for layers, batch size, layer aggregati
 To estimate the semantic change for each language, run:
 
 ```bash
-python3 src/predict.py -e <embedding_name> -l <language> -ens <ensemble_type> -a <algorithm_type> -m <metric_type>
+python3 src/predict.py -e <MODEL_NAME> -l <LANGUAGE> -ens <ENSEMBLE_TYPE> -a <ALGORITHM> -m <METRIC>
 ```
 
 This script produces `.txt` files containing the semantic change from *corpus1* to *corpus2* for the selected language and parameters.
