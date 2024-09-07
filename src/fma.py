@@ -85,7 +85,7 @@ def main():
     args = parser.parse_args()
 
     # Constants
-    LIMIT_POOL = 10
+    LIMIT_POOL = 1000
     N_OBJ = 20
     P = 0.8
 
