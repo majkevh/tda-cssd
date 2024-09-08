@@ -89,16 +89,17 @@ def main():
             np.save(subfolder_path / f"{word}_c2n_H0_{args.k}.npy", dmgs_C2N)
         else:
             # Compute persistent homology diagrams for both graphs
-            for name, (dgm1, dgm2) in zip(["H0", "H1", "H2"], 
-                                        ripser(graph_C1P, distance_matrix=True, maxdim=2)['dgms'], 
-                                        ripser(graph_C2N, distance_matrix=True, maxdim=2)['dgms']):
+            homology_keys = ["H0_0", "H1", "H2"]
+            for idx, (dgm1, dgm2) in enumerate(zip(ripser(graph_C1P, distance_matrix=True, maxdim=2)['dgms'],
+                                                   ripser(graph_C2N, distance_matrix=True, maxdim=2)['dgms'])):
+                key = homology_keys[idx]
                 # Filter out infinite values
                 dgm1_filtered = dgm1[np.isfinite(dgm1[:, 1])]
                 dgm2_filtered = dgm2[np.isfinite(dgm2[:, 1])]
 
                 # Save results
-                np.save(subfolder_path / f"{word}_c1p_{name}.npy", dgm1_filtered)
-                np.save(subfolder_path / f"{word}_c2n_{name}.npy", dgm2_filtered)
+                np.save(subfolder_path / f"{word}_c1p_{key}.npy", dgm1_filtered)
+                np.save(subfolder_path / f"{word}_c2n_{key}.npy", dgm2_filtered)
 
     # End timing and log the total time
     end_time = time.time()
