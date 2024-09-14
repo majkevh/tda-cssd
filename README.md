@@ -1,4 +1,4 @@
-# The Shape of Words
+# The Shape of Words: Semantic Change Detection via TDA
 **Author**: Michael Etienne Van Huffel
 
 
