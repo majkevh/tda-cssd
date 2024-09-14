@@ -1,4 +1,4 @@
-# The Shape of Words: The Shape of Words: Exploring Diachronic Semantic Change Detection via Topological Data Analysis
+# The Shape of Words: Exploring Diachronic Semantic Change Detection via Topological Data Analysis
 **Author**: Michael Etienne Van Huffel
 
 
