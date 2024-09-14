@@ -1,9 +1,9 @@
-# The Shape of Words: Diachronic Semantic Change Detection via TDA
+# The Shape of Words: The Shape of Words: Exploring Diachronic Semantic Change Detection via Topological Data Analysis
 **Author**: Michael Etienne Van Huffel
 
 
 ## Overview
-This repository features the implementation of topology-based algorithms for solving the *unsupervised* Lexical Semantic Change Detection (LSCD) task introduced by [Schlechtweg et al. (2020)](https://aclanthology.org/2020.semeval-1.1.pdf). The implementation utilizes three types of pre-trained contextualized embeddings: [BERT](https://aclanthology.org/N19-1423.pdf), [ELMo](https://aclanthology.org/N18-1202.pdf), and [XLM-R](https://arxiv.org/pdf/1911.02116). This work was carried out as part of my thesis during my exchange semester at Imperial College London, in collaboration with the Turing Institute and Queen Mary University.
+This repository features the implementation of topology-based algorithms for solving the *unsupervised* Lexical Semantic Change Detection task introduced by [Schlechtweg et al. (2020)](https://aclanthology.org/2020.semeval-1.1.pdf). The implementation utilizes three types of pre-trained contextualized embeddings: [BERT](https://aclanthology.org/N19-1423.pdf), [ELMo](https://aclanthology.org/N18-1202.pdf), and [XLM-R](https://arxiv.org/pdf/1911.02116). This work was carried out as part of my thesis during my exchange semester at Imperial College London, in collaboration with the Turing Institute and Queen Mary University.
 
 ![Pipeline Overview](images/pipeline.png)
 
