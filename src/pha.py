@@ -43,7 +43,7 @@ def main():
     # Define paths
     data_path = Path(f"./data/{args.language}/")
     targets_path = data_path / "targets.txt"
-    main_folder_path = Path(f"./test/PHa/{args.embedding}/")
+    main_folder_path = Path(f"./tests/PHa/{args.embedding}/")
     main_folder_path.mkdir(parents=True, exist_ok=True)
     embeddings_dir = data_path / "embeddings"
 

@@ -98,7 +98,7 @@ class ContextEmbedderBERT:
 
         self.logger.info(f"Usages found: {sum(target_counter.values())}")
         for target, count in target_counter.items():
-            self.logger.info(f'{target}: {count}')
+            self.logger.info(f'{self.i2w[target]}: {count}')
 
         # Initialize usage matrices and index tracker
         N_LAYERS = 1 if LAYER in ["top", "average"] else 13 # 13 is the standard 12 layer BERT + encoder layer

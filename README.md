@@ -1,4 +1,4 @@
-# Topology based Lexical Semantic Change Detection 
+# The Shape of Words: Exploring Diachronic Semantic Change Detection via High Dimensional Topological Data Analysis
 **Author**: Michael Etienne Van Huffel
 
 
@@ -52,12 +52,12 @@ All BERT and XLM-R  pre-trained models can be downloaded from [Hugging Face webs
 To generate the embeddings for a specific model, use the following command from the root of the repository:
 
 ```bash
-python3 src/embs/generate_embeddings.py --model "MODEL_NAME" --language "LANGUAGE" --corpus "CORPUS"
+python3 src/embs/generate_embeddings.py --embedding "MODEL_NAME" --language "LANGUAGE" --corpus "CORPUS"
 ```
 For example, to generate embeddings using the BERT model for the English corpus *ccoha1*, you can run:
 
 ```bash
-python3 src/embs/generate_embeddings.py --model "BERT" --language "english" --corpus "corpus1"
+python3 src/embs/generate_embeddings.py --embedding "BERT" --language "english" --corpus "corpus1"
 ```
 This command uses the default parameters for layers, batch size, layer aggregation, and other settings as described in my thesis. To modify these parameters, adjust the corresponding hyperparameters directly in the files `elmo.py`, `bert.py`, and `xlmr.py` in the `src/embs/` folder, for the ELMo, BERT, and XLM-R models, respectively. Please note that some functions within these files are inspired by the code accompanying the paper by [Kutuzov et al. (2020)](https://arxiv.org/pdf/2005.00050).
 
