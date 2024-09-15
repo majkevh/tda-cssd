@@ -39,8 +39,10 @@ def MRa_distances(args, subfolder_path, word):
 
 def Rips_distances(args, subfolder_path, word):
     """Calculate persistence diagram based distances using persistence diagrams."""
-    dgm1 = np.load(subfolder_path / f"{word}_c1p_H{abs(args.k)}.npy" if args.k < 0 else f"{word}_c1p_H0_{args.k}.npy")
-    dgm2 = np.load(subfolder_path / f"{word}_c2n_H{abs(args.k)}.npy" if args.k < 0 else f"{word}_c2n_H0_{args.k}.npy")
+    word1_path = f"{word}_c1p_H{abs(args.k)}.npy" if args.k < 0 else f"{word}_c1p_H0_{args.k}.npy"
+    word2_path = f"{word}_c2n_H{abs(args.k)}.npy" if args.k < 0 else f"{word}_c2n_H0_{args.k}.npy"
+    dgm1 = np.load(subfolder_path /word1_path)
+    dgm2 = np.load(subfolder_path / word2_path)
 
     metric_funcs = {
         "bottleneck": lambda: bottleneck(dgm1, dgm2),
@@ -66,17 +68,16 @@ def main():
     arg("--embedding", "-e", help="Choose contextualized embedding to compute topological summary on", required=True, choices=["BERT", "ELMo", "XLM-R"])
     arg("--verbose", "-v", help="Set verbose parameter", default=True, required=False, choices=[True, False])
     arg("--k", "-k", help="Choose between ripser PH (choose 0 for H0, -1 for H1, -2 for H2) or k-clustering (specify k value >1)", required=False, type=int)
-    arg("--ensamble", "-ens", help="Choose non-topological method to ensamble with or 'pure' to use only topological distances", required=True, choices=['pcd', "cd", 'pure'])
+    arg("--ensamble", "-ens", help="Choose non-topological method to ensamble with or 'pure' to use only topological distances", required=True, choices=['apd', "cd", 'pure', "cmb"])
     arg("--algorithm", "-a", help="Choose topological SSD algorithm between FMa, PHa, MRa", required=True, choices=["FMa", "PHa", "MRa"])
     arg("--dreduction", "-dr", help="Choose dimensionality reduction for MRa algorithm", required=False, default="Isomap", choices=["UMAP", "PCA", "TSNE", "Isomap"])
     arg("--metric", "-m", help="Choose metric for assessing topological distance", required=True,  choices=["bottleneck", "wasserstein", "sliced-ws", "pers-images", "betti-curve", "pers-landscape", "u-mean", "u-ks", "jaccard", "rw", "degree-distr", "entropy"])
-    arg("--output_path", "-o", help="Specify output path for .txt file with predictions", default= "./", required=False, type=str)
+    arg("--output_path", "-o", help="Specify output path for .txt file with predictions", default= "./output.txt", required=False, type=str)
     arg("--input_path", "-i", help="Path to main simulation folder", required=False, default="./precomputed/", type=str)
     args = parser.parse_args()
     assert args.metric in (["jaccard", "rw", "degree-distr", "entropy"] if args.algorithm == "MRa" else ["bottleneck", "wasserstein", "sliced-ws", "pers-images", "betti-curve", "pers-landscape", "u-mean", "u-ks"])
 
 
-    THETA = 0.8
     data_path = Path(f"./data/{args.language}/")
     main_folder_path = Path(f"{args.input_path}/{args.algorithm}/{args.embedding}/")
     embeddings_dir = data_path / "embeddings"
@@ -85,7 +86,7 @@ def main():
     data_c1p = np.load(embeddings_dir / f"{args.embedding}/corpus1.npz")
     data_c2n = np.load(embeddings_dir / f"{args.embedding}/corpus2.npz")
 
-    predictions, bias_vector = [], []
+    predictions, bias_apd, bias_cd = [], [], []
 
     for word in tqdm(targets, desc="Processing words"):
         embeddings_C1P, embeddings_C2N = data_c1p[word], data_c2n[word]
@@ -98,17 +99,21 @@ def main():
 
         predictions.append(dist)
 
-        if args.ensamble == "cd":
-            bias_vector.append(cosine(np.mean(embeddings_C1P, axis=0), np.mean(embeddings_C2N, axis=0)))
-        elif args.ensamble == "pcd":
+        if args.ensamble != "pure":
+            bias_cd.append(cosine(np.mean(embeddings_C1P, axis=0), np.mean(embeddings_C2N, axis=0)))
             PD = cosine_distances(embeddings_C1P, embeddings_C2N)
-            bias_vector.append(np.mean(np.mean(PD, axis=1)))
+            bias_apd.append(np.mean(np.mean(PD, axis=1)))
 
     if args.ensamble == "pure":
         np.savetxt(args.output_path, predictions, fmt='%f')
     else:
         scaler = MinMaxScaler()
-        features = THETA * scaler.fit_transform(np.array(bias_vector).reshape(-1, 1)) + (1 - THETA) * scaler.fit_transform(np.array(predictions).reshape(-1, 1))
+        bias_cd_std = scaler.fit_transform(np.array(bias_cd).reshape(-1, 1))
+        bias_apd_std = scaler.fit_transform(np.array(bias_apd).reshape(-1, 1))
+        topo_std = scaler.fit_transform(np.array(predictions).reshape(-1, 1))
+
+        bias_method = bias_cd_std if args.ensamble == "cd" else bias_apd_std if args.ensamble == "apd" else (bias_cd_std * bias_apd_std).reshape(-1, 1)
+        features = np.sqrt(topo_std*bias_method)
         np.savetxt(args.output_path, features, fmt='%f')
 
     logger.info(f"Processing completed in {time.time() - start_time:.2f} seconds.")
